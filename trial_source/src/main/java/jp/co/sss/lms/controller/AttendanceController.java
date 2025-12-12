@@ -15,6 +15,7 @@ import jp.co.sss.lms.dto.LoginUserDto;
 import jp.co.sss.lms.form.AttendanceForm;
 import jp.co.sss.lms.service.StudentAttendanceService;
 import jp.co.sss.lms.util.Constants;
+import jp.co.sss.lms.util.MessageUtil;
 
 /**
  * 勤怠管理コントローラ
@@ -29,18 +30,34 @@ public class AttendanceController {
 	private StudentAttendanceService studentAttendanceService;
 	@Autowired
 	private LoginUserDto loginUserDto;
+	@Autowired
+	private MessageUtil messageUtil;
 
 	/**
 	 * 勤怠管理画面 初期表示
-	 * 
+	 * 未入力がある場合「過去日の勤怠に未入力があります。」メッセージダイアログ表示
+	 * @param attendanceForm
+	 * @param model
 	 * @param lmsUserId
 	 * @param courseId
-	 * @param model
 	 * @return 勤怠管理画面
-	 * @throws ParseException
+	 * @author 窪田
 	 */
 	@RequestMapping(path = "/detail", method = RequestMethod.GET)
 	public String index(Model model) {
+
+		//ユーザーID取得
+		Integer userId = loginUserDto.getLmsUserId();
+
+		//過去の出退勤に未入力があればture
+		boolean unentered = studentAttendanceService.hasUnenteredAttendance(userId);
+        String msg =messageUtil.getMessage("attendance.unentered");
+		
+        //未入力ならmessageをmodelに詰める
+		if(unentered) {
+			
+			model.addAttribute("message",msg);
+		}
 
 		// 勤怠一覧の取得
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService

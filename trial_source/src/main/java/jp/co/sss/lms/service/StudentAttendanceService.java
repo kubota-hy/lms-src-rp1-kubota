@@ -1,6 +1,9 @@
 package jp.co.sss.lms.service;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -96,14 +99,14 @@ public class StudentAttendanceService {
 		switch (attendanceType) {
 		case Constants.CODE_VAL_ATWORK:
 			if (tStudentAttendance != null
-					&& !tStudentAttendance.getTrainingStartTime().equals("")) {
+			&& !tStudentAttendance.getTrainingStartTime().equals("")) {
 				// 本日の勤怠情報は既に入力されています。直接編集してください。
 				return messageUtil.getMessage(Constants.VALID_KEY_ATTENDANCE_PUNCHALREADYEXISTS);
 			}
 			break;
 		case Constants.CODE_VAL_LEAVING:
 			if (tStudentAttendance == null
-					|| tStudentAttendance.getTrainingStartTime().equals("")) {
+			|| tStudentAttendance.getTrainingStartTime().equals("")) {
 				// 出勤情報がないため退勤情報を入力出来ません。
 				return messageUtil.getMessage(Constants.VALID_KEY_ATTENDANCE_PUNCHINEMPTY);
 			}
@@ -223,7 +226,7 @@ public class StudentAttendanceService {
 		// 途中退校している場合のみ設定
 		if (loginUserDto.getLeaveDate() != null) {
 			attendanceForm
-					.setLeaveDate(dateUtil.dateToString(loginUserDto.getLeaveDate(), "yyyy-MM-dd"));
+			.setLeaveDate(dateUtil.dateToString(loginUserDto.getLeaveDate(), "yyyy-MM-dd"));
 			attendanceForm.setDispLeaveDate(
 					dateUtil.dateToString(loginUserDto.getLeaveDate(), "yyyy年M月d日"));
 		}
@@ -232,11 +235,11 @@ public class StudentAttendanceService {
 		for (AttendanceManagementDto attendanceManagementDto : attendanceManagementDtoList) {
 			DailyAttendanceForm dailyAttendanceForm = new DailyAttendanceForm();
 			dailyAttendanceForm
-					.setStudentAttendanceId(attendanceManagementDto.getStudentAttendanceId());
+			.setStudentAttendanceId(attendanceManagementDto.getStudentAttendanceId());
 			dailyAttendanceForm
-					.setTrainingDate(dateUtil.toString(attendanceManagementDto.getTrainingDate()));
+			.setTrainingDate(dateUtil.toString(attendanceManagementDto.getTrainingDate()));
 			dailyAttendanceForm
-					.setTrainingStartTime(attendanceManagementDto.getTrainingStartTime());
+			.setTrainingStartTime(attendanceManagementDto.getTrainingStartTime());
 			dailyAttendanceForm.setTrainingEndTime(attendanceManagementDto.getTrainingEndTime());
 			if (attendanceManagementDto.getBlankTime() != null) {
 				dailyAttendanceForm.setBlankTime(attendanceManagementDto.getBlankTime());
@@ -283,7 +286,7 @@ public class StudentAttendanceService {
 			BeanUtils.copyProperties(dailyAttendanceForm, tStudentAttendance);
 			// 研修日付
 			tStudentAttendance
-					.setTrainingDate(dateUtil.parse(dailyAttendanceForm.getTrainingDate()));
+			.setTrainingDate(dateUtil.parse(dailyAttendanceForm.getTrainingDate()));
 			// 現在の勤怠情報リストのうち、研修日が同じものを更新用エンティティで上書き
 			for (TStudentAttendance entity : tStudentAttendanceList) {
 				if (entity.getTrainingDate().equals(tStudentAttendance.getTrainingDate())) {
@@ -332,6 +335,30 @@ public class StudentAttendanceService {
 		}
 		// 完了メッセージ
 		return messageUtil.getMessage(Constants.PROP_KEY_ATTENDANCE_UPDATE_NOTICE);
+	}
+
+	private LocalDate toLocalDate(Date date) {
+		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+	
+	/**
+	 * 出退勤時間の未入力チェック
+	 * @return true/false
+	 * @param userId
+	 * @author 窪田
+	 */
+	public boolean hasUnenteredAttendance(Integer userId) {
+
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	    String today = sdf.format(new Date());
+
+	    int count = tStudentAttendanceMapper.notEnterCount(
+	            userId,
+	            Constants.DB_FLG_FALSE,
+	            today
+	    );
+
+	    return count > 0;
 	}
 
 }
