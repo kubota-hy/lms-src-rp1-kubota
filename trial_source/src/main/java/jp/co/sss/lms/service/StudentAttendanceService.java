@@ -348,10 +348,12 @@ public class StudentAttendanceService {
 	 * @author 窪田
 	 */
 	public boolean hasUnenteredAttendance(Integer userId) {
-
+		
+		//今日の日付取得
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	    String today = sdf.format(new Date());
 
+	    //過去日の出退勤時間未入力カウント
 	    int count = tStudentAttendanceMapper.notEnterCount(
 	            userId,
 	            Constants.DB_FLG_FALSE,
