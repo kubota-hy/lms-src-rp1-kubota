@@ -345,7 +345,7 @@ public class StudentAttendanceService {
 	 * 出退勤時間の未入力チェック
 	 * @return true/false
 	 * @param userId
-	 * @author 窪田
+	 * @author 窪田拍-Task25
 	 */
 	public boolean hasUnenteredAttendance(Integer userId) {
 		

@@ -41,7 +41,7 @@ public class AttendanceController {
 	 * @param lmsUserId
 	 * @param courseId
 	 * @return 勤怠管理画面
-	 * @author 窪田
+	 * @author 窪田拍 -Task25
 	 */
 	@RequestMapping(path = "/detail", method = RequestMethod.GET)
 	public String index(Model model) {
