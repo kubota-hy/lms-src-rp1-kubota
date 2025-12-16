@@ -362,5 +362,22 @@ public class StudentAttendanceService {
 
 	    return count > 0;
 	}
+	
+	/**
+	 * 
+	 * 時間をマップにセット
+	 * @return
+	 * @author 窪田拍-Task26
+	 */
+	public AttendanceForm  createForm() {
+		
+		AttendanceForm form = new AttendanceForm();
+		
+		form.setHourMap(attendanceUtil.getHourMap());
+		
+		form.setMinuteMap(attendanceUtil.getMinuteMap());
+		
+		return form;
+	}
 
 }

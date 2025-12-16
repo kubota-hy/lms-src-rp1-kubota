@@ -146,5 +146,77 @@ public class AttendanceUtil {
 		}
 		return false;
 	}
+	
+	/**
+	 * 時間のプルダウンマップを生成
+	 * 
+	 * @return プルダウンマップ
+	 * @author 窪田拍-Task26
+	 */
+	public LinkedHashMap<Integer,String> getHourMap(){
+		LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
+		//0~23時までを格納
+		for(int i = 0;i<24;i++) {
+			//00,01,02となるように条件分岐
+			if(i<10) {
+				map.put(i, "0"+i);
+			}else {
+				String hour = String.valueOf(i);
+				map.put(i, hour);
+			}
+		}
+		return map;
+
+	}
+	
+	/**
+	 * 分のプルダウンマップを生成
+	 * @return プルダウンマップ
+	 * @author 窪田拍-Task26
+	 */
+	public LinkedHashMap<Integer,String> getMinuteMap(){
+		LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
+		//0~59分を格納
+		for(int i = 0;i<60;i++) {
+			if(i<10) {
+				map.put(i, "0"+i);
+			}else {
+				String minute = String.valueOf(i);
+				map.put(i, minute);
+			}
+		}
+		
+		return map;
+	}
+	
+	/**
+	 * 時間(時)の切り出し
+	 * 
+	 * @param trainingStartTime
+	 * @return
+	 * @author 窪田拍-Task26
+	 */
+	public Integer getHour(String trainingStartTime) {
+		if(trainingStartTime == null || trainingStartTime.isEmpty()) {
+			return null;
+			
+		}
+		return Integer.parseInt(trainingStartTime.split(":")[0]);
+	}
+	
+	/**
+	 * 時間(分)の切り出し
+	 * 
+	 * @param trainingStartMinute
+	 * @return
+	 * @author 窪田拍-Task26
+	 */
+	public Integer getMinute(String trainingStartTime) {
+		if(trainingStartTime == null || trainingStartTime.isEmpty()) {
+			return null;
+			
+		}
+		return Integer.parseInt(trainingStartTime.split(":")[1]);
+	}
 
 }
