@@ -193,7 +193,7 @@ public class AttendanceUtil {
 	 * 時間(時)の切り出し
 	 * 
 	 * @param trainingStartTime
-	 * @return
+	 * @return 時間(時)(int)
 	 * @author 窪田拍-Task26
 	 */
 	public Integer getHour(String trainingStartTime) {
@@ -208,7 +208,7 @@ public class AttendanceUtil {
 	 * 時間(分)の切り出し
 	 * 
 	 * @param trainingStartMinute
-	 * @return
+	 * @return 時間(分)(int)
 	 * @author 窪田拍-Task26
 	 */
 	public Integer getMinute(String trainingStartTime) {

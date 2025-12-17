@@ -2,8 +2,6 @@ package jp.co.sss.lms.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -222,6 +220,8 @@ public class StudentAttendanceService {
 		attendanceForm.setUserName(loginUserDto.getUserName());
 		attendanceForm.setLeaveFlg(loginUserDto.getLeaveFlg());
 		attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
+		attendanceForm.setHourMap(attendanceUtil.getHourMap());
+		attendanceForm.setMinuteMap(attendanceUtil.getMinuteMap());
 
 		// 途中退校している場合のみ設定
 		if (loginUserDto.getLeaveDate() != null) {
@@ -255,6 +255,8 @@ public class StudentAttendanceService {
 			dailyAttendanceForm.setStatusDispName(attendanceManagementDto.getStatusDispName());
 
 			attendanceForm.getAttendanceList().add(dailyAttendanceForm);
+			
+			
 		}
 
 		return attendanceForm;
@@ -336,18 +338,14 @@ public class StudentAttendanceService {
 		// 完了メッセージ
 		return messageUtil.getMessage(Constants.PROP_KEY_ATTENDANCE_UPDATE_NOTICE);
 	}
-
-	private LocalDate toLocalDate(Date date) {
-		return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	}
 	
 	/**
 	 * 出退勤時間の未入力チェック
-	 * @return true/false
+	 * @return 未入力あり/なし
 	 * @param userId
 	 * @author 窪田拍-Task25
 	 */
-	public boolean hasUnenteredAttendance(Integer userId) {
+	public boolean hasUnenteredAttendance(Integer lmsUserId) {
 		
 		//今日の日付取得
 	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -355,7 +353,7 @@ public class StudentAttendanceService {
 
 	    //過去日の出退勤時間未入力カウント
 	    int count = tStudentAttendanceMapper.notEnterCount(
-	            userId,
+	    		lmsUserId,
 	            Constants.DB_FLG_FALSE,
 	            today
 	    );
@@ -363,21 +361,4 @@ public class StudentAttendanceService {
 	    return count > 0;
 	}
 	
-	/**
-	 * 
-	 * 時間をマップにセット
-	 * @return
-	 * @author 窪田拍-Task26
-	 */
-	public AttendanceForm  createForm() {
-		
-		AttendanceForm form = new AttendanceForm();
-		
-		form.setHourMap(attendanceUtil.getHourMap());
-		
-		form.setMinuteMap(attendanceUtil.getMinuteMap());
-		
-		return form;
-	}
-
 }

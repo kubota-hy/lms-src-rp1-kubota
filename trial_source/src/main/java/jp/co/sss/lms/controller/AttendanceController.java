@@ -41,16 +41,15 @@ public class AttendanceController {
 	 * @param lmsUserId
 	 * @param courseId
 	 * @return 勤怠管理画面
-	 * @author 窪田拍 -Task25
 	 */
 	@RequestMapping(path = "/detail", method = RequestMethod.GET)
 	public String index(Model model) {
 
 		//ユーザーID取得
-		Integer userId = loginUserDto.getLmsUserId();
+		Integer lmsUserId = loginUserDto.getLmsUserId();
 
 		//過去の出退勤に未入力があればture
-		boolean unentered = studentAttendanceService.hasUnenteredAttendance(userId);
+		boolean unentered = studentAttendanceService.hasUnenteredAttendance(lmsUserId);
         String msg =messageUtil.getMessage("attendance.unentered");
 		
         //未入力ならmessageをmodelに詰める
@@ -160,24 +159,4 @@ public class AttendanceController {
 
 		return "attendance/detail";
 	}
-	
-	/**
-	 * 勤怠情報直接変更画面の出退勤時間プルダウン対応
-	 * 
-	 * @param model
-	 * @return 勤怠情報直接変更画面
-	 * @author 窪田拍-Task26
-	 */
-	@RequestMapping(path = "/update",method = RequestMethod.GET)
-	public String showUpdate(Model model) {
-		
-		//勤怠情報直接変更画面フォームを生成(プルダウン選択肢を設定
-		AttendanceForm form = studentAttendanceService.createForm();
-		
-		model.addAttribute("form",form);
-		
-		return "update";
-	}
-	
-
 }
