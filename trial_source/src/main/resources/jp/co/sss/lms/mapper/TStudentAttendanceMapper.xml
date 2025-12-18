@@ -68,6 +68,7 @@
             lms_user_id = #{lmsUserId}
         AND delete_flg = #{deleteFlg}
         AND training_date &lt; #{today}::date
+        AND status != 1
         AND (
                training_start_time IS NULL
             OR training_start_time = ''
