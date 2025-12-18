@@ -28,11 +28,11 @@
 						<tr>
 							<th class="w140">日付</th>
 							<th class="w300">コース内容</th>
-							<th class="w70">出勤</th>
-							<th class="w70">退勤</th>
-							<th class="w80">中抜け時間</th>
-							<th class="w70">ステータス</th>
-							<th class="w240">備考</th>
+							<th class="w140 text-center" colspan="2">出勤</th>
+							<th class="w text-center" colspan="2">退勤</th>
+							<th class="w80 text-center">中抜け時間</th>
+							<th class="w70 text-center">ステータス</th>
+							<th class="w240 text-center">備考</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -63,6 +63,7 @@
 										</option>
 									</select>
 								</td>
+								<!--Task26-窪田拍 START-->
 								<td class="w70">
 									<select th:name="|attendanceList[${stat.index}].trainingStartTimeMinute|"
 										class="form-control">
@@ -94,6 +95,7 @@
 										</select>
 
 								</td>
+								<!--Task26-窪田拍 END-->
 								<td class="w80">
 									<select th:name="|attendanceList[${stat.index}].blankTime|" class="form-control">
 										<option th:each="blankTime : ${attendanceForm.blankTimes}"
