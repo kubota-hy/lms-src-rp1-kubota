@@ -1,5 +1,6 @@
 package jp.co.sss.lms.form;
 
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /**
@@ -34,7 +35,9 @@ public class DailyAttendanceForm {
 	private String blankTimeValue;
 	/** ステータス */
 	private String status;
+	/** Task26-窪田拍 */
 	/** 備考 */
+	@Size(max = 100,message = "{maxlength}")
 	private String note;
 	/** セクション名 */
 	private String sectionName;

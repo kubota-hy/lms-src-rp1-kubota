@@ -9,6 +9,8 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
@@ -255,8 +257,8 @@ public class StudentAttendanceService {
 			dailyAttendanceForm.setStatusDispName(attendanceManagementDto.getStatusDispName());
 
 			attendanceForm.getAttendanceList().add(dailyAttendanceForm);
-			
-			
+
+
 		}
 
 		return attendanceForm;
@@ -338,7 +340,7 @@ public class StudentAttendanceService {
 		// 完了メッセージ
 		return messageUtil.getMessage(Constants.PROP_KEY_ATTENDANCE_UPDATE_NOTICE);
 	}
-	
+
 	/**
 	 * 出退勤時間の未入力チェック
 	 * @return 未入力あり/なし
@@ -346,19 +348,102 @@ public class StudentAttendanceService {
 	 * @author 窪田拍-Task25
 	 */
 	public boolean hasUnenteredAttendance(Integer lmsUserId) {
-		
+
 		//今日の日付取得
-	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	    String today = sdf.format(new Date());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String today = sdf.format(new Date());
 
-	    //過去日の出退勤時間未入力カウント
-	    int count = tStudentAttendanceMapper.notEnterCount(
-	    		lmsUserId,
-	            Constants.DB_FLG_FALSE,
-	            today
-	    );
+		//過去日の出退勤時間未入力カウント
+		int count = tStudentAttendanceMapper.notEnterCount(
+				lmsUserId,
+				Constants.DB_FLG_FALSE,
+				today
+				);
 
-	    return count > 0;
+		return count > 0;
 	}
-	
+
+	/**
+	 * 出勤時間に未入力があればエラーメッセージを表示する
+	 * @author 窪田拍-Task27
+	 * @param dailyForm
+	 * @param result
+	 */
+	public void attendanceStartTimeCheck(DailyAttendanceForm dailyForm,BindingResult result) {
+
+		if(result.hasErrors()) {
+			return;
+		}
+
+		Integer hour = dailyForm.getTrainingStartTimeHour();
+		Integer minute = dailyForm.getTrainingStartTimeMinute();
+
+		if(hour == null || minute == null) {
+
+			result.addError(new FieldError(
+					result.getObjectName(),
+					"trainingStartTimeHour",
+					messageUtil.getMessage(
+							"input.invalid",
+							new String[] {"出勤時間"}
+							)
+					));
+		}
+	}
+
+	/**
+	 * 退勤時間に未入力があればエラーメッセージをを表示する
+	 * @author 窪田拍-Task27
+	 * @param dailyForm
+	 * @param result
+	 */
+	public void attendacneEndTimeCheck(DailyAttendanceForm dailyForm,BindingResult result) {
+
+		if(result.hasErrors()) {
+			return;
+		}
+
+		Integer hour = dailyForm.getTrainingEndTimeHour();
+		Integer minute = dailyForm.getTrainingEndTimeMinute();
+
+		if(hour == null || minute == null) {
+
+			result.addError(new FieldError(
+					result.getObjectName(),
+					"trainingEndTimeHour",
+					messageUtil.getMessage(
+							"input.invalid",
+							new String[] {"退勤時間"}
+							)
+					));
+		}
+	}
+	/**
+	 * 出勤時間ににゅうりょくなし & 退勤時間に入力ありの場合、エラーメッセージを表示する
+	 * @author 窪田拍-Task27
+	 * @param dailyForm
+	 * @param result
+	 */
+	public void attendanceStartTimeIsNull(DailyAttendanceForm dailyForm,BindingResult result) {
+
+		if(result.hasErrors()) {
+			return;
+		}
+
+		boolean startNull = dailyForm.getTrainingStartTimeHour() == null 
+				|| dailyForm.getTrainingStartTimeMinute() ==null;
+
+		boolean endExist = dailyForm.getTrainingEndTimeHour() == null
+				&& dailyForm.getTrainingEndTimeMinute() == null;
+
+		if(startNull && endExist) {
+			result.addError(new FieldError(
+					result.getObjectName(),
+					"trainingStartTimeHour",
+					messageUtil.getMessage("attendance.punchInEmpty")));
+		}
+
+	}
+
 }
+
