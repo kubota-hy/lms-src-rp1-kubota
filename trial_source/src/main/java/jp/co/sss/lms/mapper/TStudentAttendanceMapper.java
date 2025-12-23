@@ -67,11 +67,11 @@ public interface TStudentAttendanceMapper {
 	
 	/**
 	 * 出退勤の未入力件数をカウント
+	 * @author 窪田拍-Task25
 	 * @param lmsUserId
 	 * @param deleteFlg
 	 * @param today
 	 * @return 未入力件数
-	 * @author 窪田拍-Task25
 	 */
 	int notEnterCount(
 	        @Param("lmsUserId") Integer lmsUserId,

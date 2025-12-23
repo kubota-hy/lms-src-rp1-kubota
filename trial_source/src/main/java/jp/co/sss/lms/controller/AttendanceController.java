@@ -7,13 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import jakarta.validation.Valid;
 import jp.co.sss.lms.dto.AttendanceManagementDto;
 import jp.co.sss.lms.dto.LoginUserDto;
 import jp.co.sss.lms.form.AttendanceForm;
+import jp.co.sss.lms.form.DailyAttendanceForm;
 import jp.co.sss.lms.service.StudentAttendanceService;
+import jp.co.sss.lms.util.AttendanceUtil;
 import jp.co.sss.lms.util.Constants;
 import jp.co.sss.lms.util.MessageUtil;
 
@@ -32,6 +36,8 @@ public class AttendanceController {
 	private LoginUserDto loginUserDto;
 	@Autowired
 	private MessageUtil messageUtil;
+	@Autowired
+	private AttendanceUtil attendanceUtil;
 
 	/**
 	 * 勤怠管理画面 初期表示
@@ -132,6 +138,11 @@ public class AttendanceController {
 		AttendanceForm attendanceForm = studentAttendanceService
 				.setAttendanceForm(attendanceManagementDtoList);
 		model.addAttribute("attendanceForm", attendanceForm);
+		
+		/** Task27-窪田拍*/
+		//更新前確認ダイアログダイアログメッセージ
+		model.addAttribute("updateConfirmMessage",
+				messageUtil.getMessage("dialog.update.confirm"));
 
 		return "attendance/update";
 	}
@@ -146,8 +157,26 @@ public class AttendanceController {
 	 * @throws ParseException
 	 */
 	@RequestMapping(path = "/update", params = "complete", method = RequestMethod.POST)
-	public String complete(AttendanceForm attendanceForm, Model model, BindingResult result)
+	public String complete(@Valid @ModelAttribute AttendanceForm attendanceForm, Model model, BindingResult result)
 			throws ParseException {
+		
+		for(DailyAttendanceForm dailyForm : attendanceForm.getAttendanceList()) {
+			
+			studentAttendanceService.attendanceStartTimeCheck(dailyForm, result);
+			studentAttendanceService.attendacneEndTimeCheck(dailyForm, result);
+			studentAttendanceService.attendanceStartTimeIsNull(dailyForm, result);
+			studentAttendanceService.attendanceCheckStartTimeAfterEndTime(dailyForm, result);
+			studentAttendanceService.attendanceOverBlankTime(dailyForm, result);
+
+		}
+		
+		if(result.hasErrors()) {
+			attendanceForm.setHourMap(attendanceUtil.getHourMap());
+		    attendanceForm.setMinuteMap(attendanceUtil.getMinuteMap());
+		    attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
+			
+			return "attendance/update";
+		}
 
 		// 更新
 		String message = studentAttendanceService.update(attendanceForm);

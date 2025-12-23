@@ -75,7 +75,6 @@ public class AttendanceUtil {
 
 	/**
 	 * 中抜け時間を時(hour)と分(minute)に変換
-	 *
 	 * @param min 中抜け時間
 	 * @return 時(hour)と分(minute)に変換したクラス
 	 */
@@ -149,12 +148,13 @@ public class AttendanceUtil {
 	
 	/**
 	 * 時間のプルダウンマップを生成
-	 * 
-	 * @return プルダウンマップ
 	 * @author 窪田拍-Task26
+	 * @return プルダウンマップ
+	 * 
 	 */
 	public LinkedHashMap<Integer,String> getHourMap(){
 		LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
+		map.put(null, "");
 		//0~23時までを格納
 		for(int i = 0;i<24;i++) {
 			//00,01,02となるように条件分岐
@@ -171,11 +171,13 @@ public class AttendanceUtil {
 	
 	/**
 	 * 分のプルダウンマップを生成
-	 * @return プルダウンマップ
 	 * @author 窪田拍-Task26
+	 * @return プルダウンマップ
+	 * 
 	 */
 	public LinkedHashMap<Integer,String> getMinuteMap(){
 		LinkedHashMap<Integer, String> map = new LinkedHashMap<>();
+		map.put(null, "");
 		//0~59分を格納
 		for(int i = 0;i<60;i++) {
 			if(i<10) {
@@ -191,10 +193,10 @@ public class AttendanceUtil {
 	
 	/**
 	 * 時間(時)の切り出し
-	 * 
+	 * @author 窪田拍-Task26
 	 * @param trainingStartTime
 	 * @return 時間(時)(int)
-	 * @author 窪田拍-Task26
+	 * 
 	 */
 	public Integer getHour(String trainingStartTime) {
 		if(trainingStartTime == null || trainingStartTime.isEmpty()) {
@@ -206,10 +208,10 @@ public class AttendanceUtil {
 	
 	/**
 	 * 時間(分)の切り出し
-	 * 
+	 * @author 窪田拍-Task26
 	 * @param trainingStartMinute
 	 * @return 時間(分)(int)
-	 * @author 窪田拍-Task26
+	 * 
 	 */
 	public Integer getMinute(String trainingStartTime) {
 		if(trainingStartTime == null || trainingStartTime.isEmpty()) {
