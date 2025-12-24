@@ -32,12 +32,13 @@
 
 			<form th:action="@{/attendance/update}" th:object="${attendanceForm}" method="post">
 				<!--Task27-窪田拍-->
-				<div class="text-danger" th:if="${#fields.hasErrors()}">
+				<div class="text-danger" th:if="${#fields.hasErrors('*')}">
 					<ul>
-						<li th:each="err : ${#fields.errors()}" th:text="${err}">
+						<li th:each="err : ${#fields.errors('*')}" th:text="${err}">
 						</li>
 					</ul>
 				</div>
+
 
 				<table class="table table-hover dataTable no-footer">
 					<thead>

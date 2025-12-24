@@ -366,9 +366,10 @@ public class StudentAttendanceService {
 
 	/**
 	 * 出退勤時間の未入力チェック
+	 * @author 窪田拍-Task25
 	 * @return 未入力あり/なし
 	 * @param userId
-	 * @author 窪田拍-Task25
+	 * 
 	 */
 	public boolean hasUnenteredAttendance(Integer lmsUserId) {
 
@@ -536,6 +537,29 @@ public class StudentAttendanceService {
 		}
 
 	}
+	
+	/**
+	 * 備考欄文字数チェックロジック
+	 * @author 窪田拍-Task27
+	 * @param dailyForm
+	 * @param result
+	 * @param index
+	 */
+	public void attendanceNoteLengthCheck(DailyAttendanceForm dailyForm,BindingResult result,int index) {
+		
+		String note = dailyForm.getNote();
+		 if (note != null && note.length() > 100) {
+		        result.rejectValue(
+		            "attendanceList[" + index + "].note",
+		            "maxlength",
+		            new Object[]{"備考", 100},
+		            null
+		        );
 
+
+		}
+	}
 }
+
+
 
